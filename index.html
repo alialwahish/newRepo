@@ -1,6 +1,41 @@
-<h3> Hello Programmers watching this </h3>
+<?php
 
-<p> this is a p tag </p>
+$curl = curl_init();
+// to generate the keys run the  and add it to the Basic 
 
-<h2> this is on develop only<h2>
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "https://ssapi.shipstation.com/orders?orderStatus=awaiting_shipment&warehouseId=404424",
+  // CURLOPT_URL => "https://ssapi.shipstation.com/orders/127504593",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 0,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "GET",
+  CURLOPT_HTTPHEADER => array(
+    "Host: ssapi.shipstation.com",
+    "Authorization:Basic ".$authKey
+  ),
+));
+
+echo '<h1>Wheaton Candles</h1>';
+$response = curl_exec($curl);
+
+$response=json_decode($response);
+// var_dump($response->orders[6]->items[0]->options);
+// var_dump($response[0]->items[0]->options[2]->value);
+foreach ($response->orders as $order) {
+  foreach($order->items as $items){
+    foreach($items->options as $option){
+     if($option->name=='Personalization'){
+      var_dump('Item SKU => '.$items->sku);
+      var_dump('Personalize message=> '.$option->value);
+     }
+    }
+  }
+
+}
+curl_close($curl);
 
